@@ -800,23 +800,42 @@ recomienda las siguientes prácticas:
 % ── 2.4 Plan SQA ────────────────────────────────────────────────────
 \subsection{Plan SQA preliminar según IEEE 730}
 
-% PENDIENTE DE REDACTAR POR EL EQUIPO
-\textit{[Esta sección será completada por el equipo con base en los hallazgos de las secciones 2.2 y 2.3.]}
+Para asegurar que las modificaciones e implementaciones sobre la plataforma cal.com mantengan un nivel óptimo, se define el siguiente Plan de Aseguramiento de Calidad de Software basado en el estándar \parencite{ieee730}.
 
 \subsubsection*{Purpose (Alcance del plan)}
-% ...
+El propósito de este plan es definir los procesos, métricas y responsabilidades de SQA aplicables a la adaptación, despliegue y mantenimiento de cal.com. El alcance cubre desde la validación del código fuente mediante análisis estático hasta las pruebas de integración en entornos de auto-hospedaje (\textit{self-hosted}).
 
 \subsubsection*{Management (Roles)}
-% ...
+El equipo de trabajo se distribuye en los siguientes roles de calidad:
+\begin{itemize}
+    \item \textbf{Líder SQA:} Responsable de auditar el cumplimiento del estándar y autorizar los pases a producción.
+    \item \textbf{Ingeniero de Pruebas (QA):} Encargado de diseñar y ejecutar pruebas E2E en Playwright y reportar defectos.
+    \item \textbf{Desarrollador / DevOps:} Responsable de ejecutar pruebas unitarias con Vitest y mantener el pipeline de CI/CD.
+\end{itemize}
 
 \subsubsection*{Standards, practices, metrics}
-% ...
+Se adoptan las métricas definidas en la sección 2.3 de este documento (basadas en ISO/IEC 25023). Adicionalmente, se imponen las siguientes prácticas auditables:
+\begin{itemize}
+    \item Uso estricto de \textbf{ESLint} y \textbf{Prettier} para estandarizar el formato del código TypeScript.
+    \item Análisis de código estático obligatorio con \textbf{SonarQube} en cada \textit{Pull Request}.
+    \item Prohibición técnica de integrar código que reduzca la cobertura de pruebas actual del repositorio.
+\end{itemize}
 
 \subsubsection*{Test (Estrategia de pruebas)}
-% ...
+La estrategia se divide en tres niveles integrados en GitHub Actions:
+\begin{itemize}
+    \item \textbf{Pruebas Unitarias:} Ejecutadas localmente y en el pipeline usando Vitest para la lógica de negocio y cálculos de zonas horarias.
+    \item \textbf{Pruebas E2E:} Ejecutadas con Playwright para simular el flujo completo de reserva de un usuario real en un navegador \textit{headless}.
+    \item \textbf{Pruebas de Carga:} Evaluaciones periódicas con k6 para validar la subcaracterística de Capacidad de desempeño.
+\end{itemize}
 
 \subsubsection*{Problem reporting}
-% ...
+Los defectos encontrados se gestionarán mediante GitHub Issues y Sentry, clasificados por severidad con los siguientes SLA (Acuerdos de Nivel de Servicio):
+\begin{itemize}
+    \item \textbf{Crítico (Caída del sistema o brecha de seguridad):} Tiempo de respuesta inmediato; resolución en menos de 24 horas.
+    \item \textbf{Mayor (Fallo funcional sin alternativa u \textit{workaround}):} Resolución en el sprint actual (máximo 7 días).
+    \item \textbf{Menor (Errores de UI/UX o fallos visuales):} Envío al backlog para priorización mensual.
+\end{itemize}
 
 % ── 2.5 Modelo de madurez ───────────────────────────────────────────
 \subsection{Recomendación de modelo de madurez}
