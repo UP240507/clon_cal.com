@@ -839,10 +839,15 @@ Los defectos encontrados se gestionarán mediante GitHub Issues y Sentry, clasif
 
 % ── 2.5 Modelo de madurez ───────────────────────────────────────────
 \subsection{Recomendación de modelo de madurez}
-
-% PENDIENTE DE REDACTAR POR EL EQUIPO
-\textit{[Esta sección comparará CMMI, MoProSoft e ISO 33000 y justificará la recomendación según el contexto de cal.com.]}
-
+Para un equipo pequeño (4 integrantes) encargado de adaptar e implementar cal.com, es fundamental seleccionar un modelo de madurez de procesos que sea realista, aplicable y económicamente viable. Tras evaluar CMMI, ISO/IEC 33000 y MoProSoft, se concluye lo siguiente:
+\textbf{CMMI (Capability Maturity Model Integration)} es el estándar de facto a nivel internacional para grandes corporativos, pero su implementación resulta pesada, burocrática y costosa para equipos ágiles pequeños. Por otro lado, \textbf{ISO/IEC 33000} ofrece un marco robusto de evaluación, pero su alto nivel de abstracción dificulta una adopción rápida sin consultoría externa.
+Por lo tanto, se recomienda adoptar \textbf{MoProSoft (NMX-I-059-NYCE)} como el modelo de madurez ideal para el contexto de este proyecto. MoProSoft fue diseñado específicamente para la industria de software en México y está optimizado para Pequeñas y Medianas Empresas (PyMEs) \parencite{oktaba2008}.
+La justificación técnica para elegir MoProSoft se fundamenta en tres factores:
+\begin{itemize}
+\item \textbf{Tamaño del equipo:} La estructura organizacional de MoProSoft (Alta Dirección, Gerencia y Operación) se puede mapear ágilmente a un equipo de 4 personas utilizando el concepto de "roles" en lugar de departamentos rígidos.
+\item \textbf{Orientación práctica:} Proporciona procesos claramente definidos (como Gestión de Proyectos y Desarrollo/Mantenimiento de Software) que encajan de forma natural con el trabajo de personalización y despliegue del monorepo de cal.com.
+\item \textbf{Mercado objetivo:} Si el equipo proyecta ofrecer cal.com como servicio comercial gestionado en el mercado mexicano o latinoamericano, la certificación MoProSoft avala la calidad del proceso localmente y sirve como el escalón preparatorio ideal hacia futuras certificaciones ISO.
+\end{itemize}
 % ── 2.6 Matriz de riesgos ───────────────────────────────────────────
 \subsection{Matriz de riesgos de calidad}
 
