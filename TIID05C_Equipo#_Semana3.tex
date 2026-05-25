@@ -179,6 +179,17 @@ GitHub (\url{https://github.com/calcom/cal.com}), incluyendo estructura de códi
 cobertura de pruebas, pipeline de CI/CD y documentación de auto-hospedaje. Las mejoras
 propuestas se basan en los hallazgos de dicha evaluación.
 
+\subsubsection*{Diagrama de Arquitectura de Alto Nivel}
+
+La interacción entre los componentes del stack tecnológico descrito anteriormente y los servicios externos se ilustra en el siguiente diagrama de alto nivel.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{diagrama.png}
+    \caption{Diagrama de arquitectura de alto nivel de Cal.com, mostrando el flujo entre el Frontend, Backend, Base de Datos y servicios externos.}
+    \label{fig:arquitectura}
+\end{figure}
+
 % ── 2.2 ISO/IEC 25010 ────────────────────────────────────────────────
 \subsection{Análisis de calidad con ISO/IEC 25010}
 
@@ -556,6 +567,14 @@ característica para el contexto específico de cal.com:
 \bottomrule
 \end{tabular}
 \end{center}
+
+\subsubsection*{Características de Calidad en Uso}
+De acuerdo con la norma ISO/IEC 25010 \parencite{iso25010}, además de la calidad interna del producto, se deben considerar las 5 características de Calidad en Uso: Efectividad, Eficiencia, Satisfacción, Mitigación de Riesgos y Cobertura de Contexto. Para el ecosistema de cal.com, las dos más relevantes a discutir son:
+
+\begin{itemize}
+    \item \textbf{Satisfacción:} Es crítica para los \textit{usuarios reservadores}. Si la experiencia de agendar (UI/UX) no genera confianza, fluidez y comodidad, el usuario abandona el proceso, afectando directamente el valor de la herramienta.
+    \item \textbf{Mitigación de Riesgos (Económicos y Reputacionales):} Un fallo en el sistema de reservas, zonas horarias o en las integraciones de pago (ej. Stripe) tiene un impacto financiero directo e inmediato para el anfitrión (pérdida de ingresos o clientes).
+\end{itemize}
 
 % ── 2.3 KPIs ISO/IEC 25023 ───────────────────────────────────────────
 \subsection{KPIs medibles según ISO/IEC 25023}
@@ -936,14 +955,13 @@ proceso.
 % ==========================================
 \section{Aportes individuales}
 
-\textbf{Christopher Rubén Rosales Gómez (UP240507):} Configuró la arquitectura inicial del proyecto en LaTeX y Git, integró las normativas de citación APA 7 con BibTeX y resolvió la estructura del documento base. \\[0.3cm]
+\textbf{Christopher Rubén Rosales Gómez (UP240507):} Coordinó el entorno de trabajo colaborativo en Git/GitHub, diseñó la arquitectura del documento base en LaTeX, implementó el motor BibTeX para el cumplimiento estricto del formato APA 7 y colaboró en la definición del contexto e introducción del proyecto. \\[0.3cm]
 
-\textbf{Jesús Ernesto Navarro Guel (UP240193):} Analizó el sistema bajo el estándar ISO/IEC 25010, redactó los 27 KPIs medibles basados en ISO/IEC 25023 y elaboró la matriz de riesgos del proyecto. \\[0.3cm]
+\textbf{Jesús Ernesto Navarro Guel (UP240193):} Investigó y redactó el Plan de Aseguramiento de Calidad (SQA) preliminar adaptando las directrices del estándar IEEE 730 al contexto del proyecto, y estructuró los niveles de la estrategia de pruebas (Sección 2.4). \\[0.3cm]
 
-\textbf{Mía Lizeska Babún Pérez (UP260733):} Redactó el Plan de Aseguramiento de Calidad (SQA) preliminar, adaptando las directrices del estándar IEEE 730 a la estrategia de pruebas y roles del equipo. \\[0.3cm]
+\textbf{Mía Lizeska Babún Pérez (UP260733):} Realizó el análisis comparativo de modelos de madurez (CMMI, ISO 33000 y MoProSoft), justificando técnica y operativamente la adopción de MoProSoft, y colaboró en las estrategias de mitigación (Sección 2.5). \\[0.3cm]
 
-\textbf{Diego Sánchez González (UP240430):} Realizó el análisis comparativo de modelos de madurez, argumentando técnica y operativamente la elección de MoProSoft, y redactó la conclusión integral.
-
+\textbf{Diego Sánchez González (UP240430):} Documentó el stack tecnológico del proyecto, evaluó la plataforma bajo las 8 características del estándar ISO/IEC 25010, estructuró las fórmulas de los KPIs basados en ISO/IEC 25023 y redactó la conclusión integral.
 % ==========================================
 % 7. REFERENCIAS
 % ==========================================
