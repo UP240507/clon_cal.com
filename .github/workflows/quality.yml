@@ -1,0 +1,105 @@
+name: Quality Gate (Selenium + SonarQube)
+
+# Bonus — TIID05C Examen Práctico Unidad 2:
+# En cada push/PR corre la suite Selenium (headless), publica report.html y
+# coverage.xml como artifacts, y lanza el análisis de SonarQube con
+# verificación del Quality Gate. SonarQube corre como servicio efímero dentro
+# del propio job (no depende del SonarQube local del equipo del alumno).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+
+    services:
+      sonarqube:
+        image: sonarqube:community
+        ports:
+          - 9000:9000
+        options: >-
+          --health-cmd "curl -f http://localhost:9000/api/system/status || exit 1"
+          --health-interval 15s
+          --health-timeout 10s
+          --health-retries 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # necesario para sonar.scm / blame
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Python test dependencies
+        run: pip install "selenium>=4.15" pytest pytest-cov pytest-html
+
+      # ubuntu-latest ya trae Google Chrome preinstalado; Selenium Manager
+      # (incluido desde Selenium 4.6) descarga el chromedriver compatible
+      # automáticamente, sin configuración extra.
+
+      - name: Run Selenium suite (headless) with coverage + HTML report
+        run: |
+          pytest tests --cov=tests/pages --cov-report=xml --html=report.html --self-contained-html
+
+      - name: Upload test report and coverage as artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-evidence
+          path: |
+            report.html
+            coverage.xml
+
+      - name: Wait for SonarQube to be ready
+        run: |
+          for i in $(seq 1 30); do
+            status=$(curl -s http://localhost:9000/api/system/status | grep -o '"status":"[A-Z]*"' || true)
+            echo "SonarQube status: $status"
+            if echo "$status" | grep -q '"status":"UP"'; then
+              echo "SonarQube is up."
+              break
+            fi
+            sleep 10
+          done
+
+      - name: Generate one-off SonarQube token
+        id: sonar_token
+        run: |
+          TOKEN=$(curl -s -u admin:admin -X POST \
+            "http://localhost:9000/api/user_tokens/generate" \
+            -d "name=ci-${{ github.run_id }}" | python3 -c "import sys, json; print(json.load(sys.stdin)['token'])")
+          echo "::add-mask::$TOKEN"
+          echo "token=$TOKEN" >> "$GITHUB_OUTPUT"
+
+      - name: SonarQube scan
+        env:
+          SONAR_TOKEN: ${{ steps.sonar_token.outputs.token }}
+        run: npx --yes @sonar/scan -Dsonar.host.url=http://localhost:9000
+
+      - name: Check Quality Gate
+        env:
+          SONAR_TOKEN: ${{ steps.sonar_token.outputs.token }}
+        run: |
+          curl -s -u "$SONAR_TOKEN:" \
+            "http://localhost:9000/api/qualitygates/project_status?projectKey=calcom-upa-testing" \
+            | tee quality-gate.json
+          status=$(python3 -c "import json; print(json.load(open('quality-gate.json'))['projectStatus']['status'])")
+          echo "Quality Gate status: $status"
+          if [ "$status" != "OK" ]; then
+            echo "::warning::Quality Gate en estado $status (revisar condiciones en el tablero de SonarQube)."
+            exit 1
+          fi
