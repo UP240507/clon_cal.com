@@ -81,7 +81,10 @@ export const getOGImageVersion = async (
     ...(additionalInputs ?? {}),
   };
 
-  const content = JSON.stringify(versionInputs, Object.keys(versionInputs).sort());
+  const content = JSON.stringify(
+    versionInputs,
+    Object.keys(versionInputs).sort((a, b) => a.localeCompare(b))
+  );
 
   // Use Web Crypto API instead of Node.js crypto for Edge Runtime compatibility (`/api/social/og/image` is an Edge Runtime route)
   const hashBuffer = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(content));
