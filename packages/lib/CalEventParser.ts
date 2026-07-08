@@ -129,17 +129,25 @@ ${labelValueMap[key]}
   return responsesString;
 };
 
+const formatAppStatusBadge = (icon: string, count: number) => {
+  if (count < 1) {
+    return "";
+  }
+  const countSuffix = count > 1 ? `(x${count})` : "";
+  return `${icon} ${countSuffix}`;
+};
+
 export const getAppsStatus = (t: TFunction, appsStatus?: AppsStatus[] | null) => {
   if (!appsStatus) {
     return "";
   }
   return `\n${t("apps_status")}
       ${appsStatus.map((app) => {
-        return `\n- ${app.appName} ${
-          app.success >= 1 ? `✅ ${app.success > 1 ? `(x${app.success})` : ""}` : ""
-        }${
+        const successBadge = formatAppStatusBadge("✅", app.success);
+        const failuresBadge = formatAppStatusBadge("❌", app.failures);
+        return `\n- ${app.appName} ${successBadge}${
           app.warnings && app.warnings.length >= 1 ? app.warnings.map((warning) => `\n   - ${warning}`) : ""
-        } ${app.failures && app.failures >= 1 ? `❌ ${app.failures > 1 ? `(x${app.failures})` : ""}` : ""} ${
+        } ${failuresBadge} ${
           app.errors && app.errors.length >= 1 ? app.errors.map((error) => `\n   - ${error}`) : ""
         }`;
       })}
