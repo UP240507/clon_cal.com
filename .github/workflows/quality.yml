@@ -90,6 +90,25 @@ jobs:
           SONAR_TOKEN: ${{ steps.sonar_token.outputs.token }}
         run: npx --yes @sonar/scan -Dsonar.host.url=http://localhost:9000
 
+      - name: Wait for background analysis (Compute Engine task)
+        env:
+          SONAR_TOKEN: ${{ steps.sonar_token.outputs.token }}
+        run: |
+          CE_TASK_URL=$(grep '^ceTaskUrl=' .scannerwork/report-task.txt | cut -d= -f2-)
+          echo "Polling $CE_TASK_URL"
+          for i in $(seq 1 30); do
+            task_status=$(curl -s -u "$SONAR_TOKEN:" "$CE_TASK_URL" | python3 -c "import sys, json; print(json.load(sys.stdin)['task']['status'])")
+            echo "CE task status: $task_status"
+            if [ "$task_status" = "SUCCESS" ]; then
+              break
+            fi
+            if [ "$task_status" = "FAILED" ] || [ "$task_status" = "CANCELED" ]; then
+              echo "::error::El análisis falló en el servidor (status=$task_status)."
+              exit 1
+            fi
+            sleep 5
+          done
+
       - name: Check Quality Gate
         env:
           SONAR_TOKEN: ${{ steps.sonar_token.outputs.token }}
